@@ -54,90 +54,23 @@ Digunakan untuk:
 
 ---
 
-## 📖 KONSEP
+## 📖 Alur Transaksi Nyata (End-to-End)
 
-┌──────────────────────────────┐
-│        NASABAH / USER         │
-│  ATM | Mobile | Teller | API │
-└───────────────┬──────────────┘
-                │
-                ▼
-┌──────────────────────────────┐
-│        CHANNEL LAYER          │
-│  - UI only                   │
-│  - No saldo logic            │
-└───────────────┬──────────────┘
-                │  ISO 8583
-                ▼
-┌──────────────────────────────┐
-│     ATM / CHANNEL SWITCH     │
-│  - ISO 8583 parser           │
-│  - Routing                   │
-│  - Timeout / Reversal        │
-└───────┬───────────────┬──────┘
-        │               │
-        │               ▼
-        │     ┌─────────────────┐
-        │     │       HSM        │
-        │     │ - PIN Verify     │
-        │     │ - Key Mgmt       │
-        │     └─────────────────┘
-        │
-        ▼
-┌──────────────────────────────┐
-│   CORE BANKING ONLINE        │
-│   (COBOL + DB2 + CICS)       │
-│  - Auth                      │
-│  - Business Rule             │
-│  - Limit & Fraud Check       │
-│  - Commit / Rollback         │
-└───────────────┬──────────────┘
-                │
-      ┌─────────┴──────────┐
-      │                    │
-      ▼                    ▼
-┌───────────────┐   ┌────────────────┐
-│ MAKER–CHECKER │   │ CDM (SETOR)     │
-│ MULTI LEVEL   │   │ STATUS=PENDING  │
-│ M → C1 → C2   │   └────────────────┘
-└───────┬───────┘
-        │
-        ▼
-┌──────────────────────────────┐
-│     EXECUTION ENGINE         │
-│  - Posting saldo final       │
-│  - Dual control              │
-└───────────────┬──────────────┘
-                │
-                ▼
-┌──────────────────────────────┐
-│   ACTIVE–ACTIVE DATABASE     │
-│  DC A  ⇄  DC B               │
-│  - Synchronous commit        │
-└───────────────┬──────────────┘
-                │
-                ▼
-┌──────────────────────────────┐
-│        AUDIT & LOG           │
-│  - Immutable                │
-│  - Regulator ready          │
-└───────────────┬──────────────┘
-                │
-                ▼
-┌──────────────────────────────┐
-│     END OF DAY (BATCH)       │
-│  - Reconciliation            │
-│  - Finalize CDM              │
-│  - GL Posting                │
-└───────────────┬──────────────┘
-                │
-                ▼
-┌──────────────────────────────┐
-│   REGULATOR / BASEL REPORT   │
-│  - LCR                       │
-│  - Risk Event                │
-│  - Exposure                  │
-└──────────────────────────────┘
+Nasabah
+ ↓
+CB-ATM-REQ.cbl
+ ↓
+CB-ATM-SWITCH.cbl
+ ↓
+CB-CORE-ONLINE.cbl
+ ↓
+Maker → Checker L1 → Checker L2
+ ↓
+CB-EXECUTOR.cbl
+ ↓
+AUDIT-LOG.cbl
+ ↓
+CB-EOD-BATCH.cbl
 
 
 ## AUTHOR 

@@ -1,0 +1,16 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CB-EOD-BATCH.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       EXEC SQL INCLUDE SQLCA END-EXEC.
+
+       PROCEDURE DIVISION.
+           EXEC SQL
+              UPDATE CDM_TRX
+              SET STATUS = 'S'
+              WHERE STATUS = 'P'
+           END-EXEC
+
+           EXEC SQL COMMIT END-EXEC
+           STOP RUN.

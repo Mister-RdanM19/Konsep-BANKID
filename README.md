@@ -60,20 +60,16 @@ Nasabah
 <br>
 CB-ATM-REQ.cbl
 <br>
-
 CB-ATM-SWITCH.cbl
 <br>
-
 CB-CORE-ONLINE.cbl
 <br>
-
 Maker → Checker L1 → Checker L2
 <br>
 CB-EXECUTOR.cbl
 <br>
 AUDIT-LOG.cbl
  <br>
-
 CB-EOD-BATCH.cbl
 
 

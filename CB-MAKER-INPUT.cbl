@@ -1,0 +1,33 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CB-MAKER-INPUT.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       EXEC SQL INCLUDE SQLCA END-EXEC.
+
+       01 WS-ID-TRX    PIC X(20).
+       01 WS-SRC       PIC X(6).
+       01 WS-DST       PIC X(6).
+       01 WS-AMOUNT    PIC S9(13)V99 COMP-3.
+       01 WS-MAKER     PIC X(10).
+
+       PROCEDURE DIVISION.
+           ACCEPT WS-SRC
+           ACCEPT WS-DST
+           ACCEPT WS-AMOUNT
+           ACCEPT WS-MAKER
+
+           MOVE FUNCTION CURRENT-DATE TO WS-ID-TRX
+
+           EXEC SQL
+              INSERT INTO TRX_QUEUE
+              (ID_TRX, NO_REK_SRC, NO_REK_DST, AMOUNT,
+               STATUS, MAKER_ID, CREATED_TS, UPDATED_TS)
+              VALUES
+              (:WS-ID-TRX, :WS-SRC, :WS-DST, :WS-AMOUNT,
+               'M', :WS-MAKER, CURRENT TIMESTAMP, CURRENT TIMESTAMP)
+           END-EXEC
+
+           EXEC SQL COMMIT END-EXEC
+           DISPLAY "TRANSAKSI MASUK ANTRIAN (MAKER)"
+           STOP RUN.
